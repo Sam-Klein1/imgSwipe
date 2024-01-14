@@ -1,5 +1,15 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow imgSwipe to access your photos.",
+          "savePhotosPermission": "Allow imgSwipe to save photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ],
     "name": "imgSwipe",
     "slug": "imgSwipe",
     "version": "1.0.0",
