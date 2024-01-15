@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Dimensions, View, TouchableOpacity, Text } from "react-native";
 import Animated, {
   useSharedValue,
@@ -10,7 +10,6 @@ import Animated, {
   interpolate,
 } from "react-native-reanimated";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
-import { Image } from "expo-image";
 
 const ROTATION_ANGLE = 30;
 
@@ -63,6 +62,7 @@ const SwipeableImage = ({
   deleteOverlayOpacity,
   saveOverlayOpacity,
   setImagesToDelete,
+  renderItem
 }) => {
   const { width: screenWidth } = Dimensions.get("window");
 
@@ -72,17 +72,8 @@ const SwipeableImage = ({
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentItem = images[currentIndex];
-  const [nextIndex, setNextIndex] = useState(currentIndex + 1);
+  const [nextIndex, setNextIndex] = useState(currentIndex+1);
   const nextItem = images[nextIndex];
-
-  // Memoize the source prop for the current and next images
-  const currentImageSource = useMemo(() => {
-    return currentItem ? { uri: currentItem.uri } : null;
-  }, [currentItem]);
-
-  const nextImageSource = useMemo(() => {
-    return nextItem ? { uri: nextItem.uri } : null;
-  }, [nextItem]);
 
   const hiddenTranslateX = 2 * screenWidth;
 
@@ -231,11 +222,11 @@ const SwipeableImage = ({
   }));
 
   useEffect(() => {
-    translateX.value = withTiming(0, { duration: 0 }, () => {
-      runOnJS(setNextIndex)(currentIndex + 1);
-      translateY.value = 0;
-    });
-  }, [currentIndex, translateX, translateY]);
+    translateX.value = withTiming(0, { duration: 0 }
+    );
+    translateY.value = withTiming(0, { duration: 0 }, () =>
+    runOnJS(setNextIndex)(currentIndex + 1))
+  }, [currentIndex]);
 
   return (
     <View className="w-full">
@@ -257,13 +248,9 @@ const SwipeableImage = ({
               <Animated.View
                 className="flex-1 bottom-0 left-0 absolute right-0 top-0 border rounded-2xl"
                 style={nextItemAnimatedStyle}
-                key={nextIndex}
+                key={currentIndex + 1}
               >
-                <Image
-                  source={nextImageSource}
-                  className="flex-1 rounded-2xl"
-                  contentFit="cover"
-                />
+                {renderItem(nextItem, currentIndex+1)}
               </Animated.View>
             )}
             {currentItem && (
@@ -271,13 +258,8 @@ const SwipeableImage = ({
                 <Animated.View
                   className="flex-1 w-full border rounded-2xl"
                   style={animatedStyle}
-                  key={currentIndex}
                 >
-                  <Image
-                    source={currentImageSource}
-                    className="flex-1 rounded-2xl"
-                    contentFit="cover"
-                  />
+                  {renderItem(currentItem, currentIndex)}
                 </Animated.View>
               </GestureDetector>
             )}

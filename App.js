@@ -1,14 +1,15 @@
 // App.js
-import React, { useEffect, useState } from "react";
-import { View, Text, Dimensions, Button, TouchableOpacity} from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, Dimensions, TouchableOpacity} from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import SwipeableImage from "./SwipeableImage";
+import SwipeableImage from "./components/SwipeableImage";
 import { StatusBar } from "expo-status-bar";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import ImageCard from "./components/ImageCard";
 
 const App = () => {
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
@@ -102,6 +103,8 @@ const App = () => {
     };
   });
 
+  const renderItem = useCallback((item) => <ImageCard item={item} />, []);
+
   return (
     <GestureHandlerRootView className="flex-1 bg-blue-200">
       <StatusBar status="auto" />
@@ -115,6 +118,7 @@ const App = () => {
             saveOverlayOpacity={saveOverlayOpacity}
             imagesToDelete={imagesToDelete}
             setImagesToDelete={setImagesToDelete}
+            renderItem={renderItem}
           />
 
           {/* Boundaries */}
